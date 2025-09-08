@@ -6,14 +6,9 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from src.config import RAW_DATA_PATH
 
 
+#download dataset from kaggle
 def download_dataset(dataset_slug: str, path: str = RAW_DATA_PATH):
-    """
-    Download and unzip a Kaggle dataset.
-
-    Args:
-        dataset_slug (str): Dataset identifier on Kaggle, e.g. 'adilshamim8/social-media-addiction-vs-relationships'
-        path (str): Local folder to download and unzip files into.
-    """
+    
     os.makedirs(path, exist_ok=True)
 
     api = KaggleApi()
@@ -23,9 +18,14 @@ def download_dataset(dataset_slug: str, path: str = RAW_DATA_PATH):
     api.dataset_download_files(dataset_slug, path=path, unzip=True)
     print("Download complete.")
 
+#load data into dataframe
 def load_data(path):
    return pd.read_csv(path)
 
+#clean loaded dataframe
+#1. drop na's
+#2. drop duplicates
+#3. output changes
 def clean_data(df):
     df_len = len(df)
     df = df.dropna()
@@ -34,6 +34,9 @@ def clean_data(df):
     print(f"Dropped {df_len - cleaned_df_len} duplicate or empty records.")
     return df
 
+#1. Define category and numeric columns based on data type
+#2. Drop first encoded column of each category
+#3. Keep remaining columns as-id
 def fit_preprocessor(X):
     categorical_cols = X.select_dtypes(include=['object']).columns.tolist()
     numeric_cols = X.select_dtypes(include=['int64', 'float64']).columns.tolist()
@@ -49,6 +52,7 @@ def fit_preprocessor(X):
     preprocessor.fit(X)
     return preprocessor
 
+#Apply preprocessor to dataset
 def transform_with_preprocessor(preprocessor, X):
     return preprocessor.transform(X)
 

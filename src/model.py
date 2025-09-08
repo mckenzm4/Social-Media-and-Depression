@@ -9,6 +9,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import numpy as np
 import pandas as pd
 
+#neural network configuration
 def build_nn(input_dim):
     model = Sequential()
     model.add(Dense(64, activation='relu', input_dim=input_dim))
@@ -17,6 +18,8 @@ def build_nn(input_dim):
     model.compile(optimizer=Adam(learning_rate=0.001), loss='mse', metrics=['mae'])
     return model
 
+#train linear regression, svr, xgboost, and neural network models
+#return dictionary of trained models
 def train_models(X_train, y_train):
     
     models = {}
@@ -54,6 +57,7 @@ def train_models(X_train, y_train):
 
     return models
 
+#Calculate regression evaluation metrics
 def evaluate_regression(y_true, y_pred):
     return {
         "MAE": mean_absolute_error(y_true, y_pred),
@@ -62,6 +66,7 @@ def evaluate_regression(y_true, y_pred):
         "R2": r2_score(y_true, y_pred),
     }
 
+#Evaluate all models
 def evaluate_all(models: dict, X_test, y_test):
     import pandas as pd
 
